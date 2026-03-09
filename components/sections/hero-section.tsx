@@ -1,205 +1,144 @@
 "use client";
 
-import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
+import Link from "next/link";
+import { AnimatedIcon } from "@/components/animated-icon";
 
-const word = "EVASION";
-
-const sideImages = [
-  {
-    src: "https://images.unsplash.com/photo-1517824806704-9040b037703b?q=80&w=1000",
-    alt: "Mountain hiking adventure",
-    position: "left",
-    span: 1,
-  },
-  {
-    src: "https://images.unsplash.com/photo-1510312305653-8ed496efae75?q=80&w=1000",
-    alt: "Camping under stars",
-    position: "left",
-    span: 1,
-  },
-  {
-    src: "https://images.unsplash.com/photo-1533873984035-25970ab07461?q=80&w=1000",
-    alt: "Forest exploration",
-    position: "right",
-    span: 1,
-  },
-  {
-    src: "https://images.unsplash.com/photo-1527004013197-933c4bb611b3?q=80&w=1000",
-    alt: "Lake camping view",
-    position: "right",
-    span: 1,
-  },
+const trustBadges = [
+  { icon: "users" as const, value: "800+", label: "Patienten betreut" },
+  { icon: "star" as const, value: "5,0", label: "Sterne Bewertung" },
+  { icon: "award" as const, value: "Seit 2015", label: "Spezialisiert" },
+  { icon: "location" as const, value: "München", label: "Schumannstraße 9" },
 ];
 
 export function HeroSection() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const [scrollProgress, setScrollProgress] = useState(0);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (!sectionRef.current) return;
-      
-      const rect = sectionRef.current.getBoundingClientRect();
-      const scrollableHeight = window.innerHeight * 2;
-      const scrolled = -rect.top;
-      const progress = Math.max(0, Math.min(1, scrolled / scrollableHeight));
-      
-      setScrollProgress(progress);
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-    
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
-
-  // Text fades out first (0 to 0.2)
-  const textOpacity = Math.max(0, 1 - (scrollProgress / 0.2));
-  
-  // Image transforms start after text fades (0.2 to 1)
-  const imageProgress = Math.max(0, Math.min(1, (scrollProgress - 0.2) / 0.8));
-  
-  // Smooth interpolations
-  const centerWidth = 100 - (imageProgress * 58); // 100% to 42%
-  const centerHeight = 100 - (imageProgress * 30); // 100% to 70%
-  const sideWidth = imageProgress * 22; // 0% to 22%
-  const sideOpacity = imageProgress;
-  const sideTranslateLeft = -100 + (imageProgress * 100); // -100% to 0%
-  const sideTranslateRight = 100 - (imageProgress * 100); // 100% to 0%
-  const borderRadius = imageProgress * 24; // 0px to 24px
-  const gap = imageProgress * 16; // 0px to 16px
-  
-  // Vertical offset for side columns to move them up on mobile
-  const sideTranslateY = -(imageProgress * 15); // Move up by 15% when fully expanded
-
   return (
-    <section ref={sectionRef} className="relative bg-background">
-      {/* Sticky container for scroll animation */}
-      <div className="sticky top-0 h-screen overflow-hidden">
-        <div className="flex h-full w-full items-center justify-center">
-          {/* Bento Grid Container */}
-          <div 
-            className="relative flex h-full w-full items-stretch justify-center"
-            style={{ gap: `${gap}px`, padding: `${imageProgress * 16}px`, paddingBottom: `${60 + (imageProgress * 40)}px` }}
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden section-gradient-hero">
+      {/* Background Elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-[var(--golden-chestnut)]/8 to-transparent rounded-full blur-3xl transform translate-x-1/3 -translate-y-1/4" />
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gradient-to-tr from-[var(--bright-marine)]/6 to-transparent rounded-full blur-3xl transform -translate-x-1/4 translate-y-1/4" />
+        <div className="absolute inset-0 opacity-[0.015]" style={{
+          backgroundImage: `radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)`,
+          backgroundSize: '48px 48px',
+        }} />
+      </div>
+      
+      <div className="container-premium relative z-10 pt-36 pb-24 md:pt-44 md:pb-32">
+        <div className="max-w-4xl mx-auto">
+          
+          {/* Trust Badge Bar */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="flex items-center justify-center gap-3 mb-10"
           >
-            
-            {/* Left Column */}
-            <div 
-              className="flex flex-col will-change-transform"
-              style={{
-                width: `${sideWidth}%`,
-                gap: `${gap}px`,
-                transform: `translateX(${sideTranslateLeft}%) translateY(${sideTranslateY}%)`,
-                opacity: sideOpacity,
-              }}
-            >
-              {sideImages.filter(img => img.position === "left").map((img, idx) => (
-                <div 
-                  key={idx} 
-                  className="relative overflow-hidden will-change-transform"
-                  style={{
-                    flex: img.span,
-                    borderRadius: `${borderRadius}px`,
-                  }}
-                >
-                  <Image
-                    src={img.src || "/placeholder.svg"}
-                    alt={img.alt}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-              ))}
+            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur border border-border/50 shadow-sm">
+              <AnimatedIcon icon="shield" size={18} color="#4B7FD1" trigger="loop" />
+              <span className="text-sm font-medium text-foreground">
+                Medizin-Nobelpreis 2019 ausgezeichnete Methode
+              </span>
             </div>
-
-            {/* Main Hero Image - Center */}
-            <div 
-              className="relative overflow-hidden will-change-transform"
-              style={{
-                width: `${centerWidth}%`,
-                height: `${centerHeight}%`,
-                flex: "0 0 auto",
-                borderRadius: `${borderRadius}px`,
-              }}
+          </motion.div>
+          
+          {/* Main Headline */}
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.1 }}
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold leading-[1.05] tracking-tight text-center text-foreground mb-8"
+          >
+            Dein Körper hat die{" "}
+            <span className="text-gradient-gold">Energie.</span>
+            <br />
+            <span className="text-foreground/90">Er hat nur vergessen, wie er sie</span>{" "}
+            <span className="text-gradient-blue">produziert.</span>
+          </motion.h1>
+          
+          {/* Subheadline */}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.2 }}
+            className="text-lg md:text-xl lg:text-2xl text-muted-foreground text-center leading-relaxed mb-12 max-w-2xl mx-auto"
+          >
+            IHHT-Zelltraining bei Long COVID, Burnout und chronischer Erschöpfung – 
+            wissenschaftlich belegt, seit 2015 in der Praxis{" "}
+            <span className="font-medium text-foreground">Previum®</span> in München.
+          </motion.p>
+          
+          {/* CTA Buttons */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.3 }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
+          >
+            <Link href="/kontakt" className="btn-primary text-base px-8 py-4">
+              Kostenlose Beratung sichern
+              <AnimatedIcon icon="arrowRight" size={20} color="#FFFFFF" trigger="hover" />
+            </Link>
+            <Link
+              href="#methode"
+              className="btn-secondary text-base px-8 py-4"
             >
-              <Image
-                src="/images/hero-main.png"
-                alt="Mountain landscape with camping tent at sunset"
-                fill
-                className="object-cover"
-                priority
-              />
-              
-              {/* Overlay Text - Fades out first */}
-              <div 
-                className="absolute inset-0 flex items-end overflow-hidden"
-                style={{ opacity: textOpacity }}
+              Wie funktioniert IHHT?
+            </Link>
+          </motion.div>
+          
+          {/* Trust Badges with Animated Icons */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.4 }}
+            className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 max-w-2xl mx-auto"
+          >
+            {trustBadges.map((badge, index) => (
+              <motion.div
+                key={badge.label}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
+                className="trust-badge"
               >
-                <h1 className="w-full text-[22vw] font-medium leading-[0.8] tracking-tighter text-white">
-                  {word.split("").map((letter, index) => (
-                    <span
-                      key={index}
-                      className="inline-block animate-[slideUp_0.8s_ease-out_forwards] opacity-0"
-                      style={{
-                        animationDelay: `${index * 0.08}s`,
-                        transition: 'all 1.5s',
-                        transitionTimingFunction: 'cubic-bezier(0.86, 0, 0.07, 1)',
-                      }}
-                    >
-                      {letter}
-                    </span>
-                  ))}
-                </h1>
-              </div>
-            </div>
-
-            {/* Right Column */}
-            <div 
-              className="flex flex-col will-change-transform"
-              style={{
-                width: `${sideWidth}%`,
-                gap: `${gap}px`,
-                transform: `translateX(${sideTranslateRight}%) translateY(${sideTranslateY}%)`,
-                opacity: sideOpacity,
-              }}
-            >
-              {sideImages.filter(img => img.position === "right").map((img, idx) => (
-                <div 
-                  key={idx} 
-                  className="relative overflow-hidden will-change-transform"
-                  style={{
-                    flex: img.span,
-                    borderRadius: `${borderRadius}px`,
-                  }}
-                >
-                  <Image
-                    src={img.src || "/placeholder.svg"}
-                    alt={img.alt}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-              ))}
-            </div>
-
-          </div>
+                <AnimatedIcon 
+                  icon={badge.icon} 
+                  size={32} 
+                  trigger="loop" 
+                  delay={index * 200}
+                />
+                <span className="trust-badge-value">{badge.value}</span>
+                <span className="trust-badge-label">{badge.label}</span>
+              </motion.div>
+            ))}
+          </motion.div>
+          
         </div>
       </div>
-
-      {/* Scroll space to enable animation */}
-      <div className="h-[200vh]" />
-
-      {/* Tagline Section */}
-      <div className="px-6 pt-32 pb-28 md:pt-48 md:px-12 md:pb-36 lg:px-20 lg:pt-56 lg:pb-44">
-        <p className="mx-auto max-w-2xl text-center text-2xl leading-relaxed text-muted-foreground md:text-3xl lg:text-[2.5rem] lg:leading-snug">
-          Lightweight, durable
-          <br />
-          and adventure-ready.
-        </p>
-      </div>
+      
+      {/* Scroll Indicator */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1, delay: 1 }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2"
+      >
+        <div className="flex flex-col items-center gap-2 text-muted-foreground">
+          <span className="text-xs font-medium">Mehr erfahren</span>
+          <motion.div
+            animate={{ y: [0, 6, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+            className="w-5 h-8 rounded-full border border-border flex items-start justify-center p-1.5"
+          >
+            <motion.div
+              animate={{ opacity: [0.4, 1, 0.4] }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+              className="w-1 h-1.5 rounded-full bg-[var(--golden-chestnut)]"
+            />
+          </motion.div>
+        </div>
+      </motion.div>
     </section>
   );
 }

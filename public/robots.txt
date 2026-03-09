@@ -1,0 +1,9 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://previum.de/sitemap.xml
+
+# Disallow admin and API routes
+Disallow: /api/
